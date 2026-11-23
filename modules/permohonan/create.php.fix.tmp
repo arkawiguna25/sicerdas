@@ -1,0 +1,1 @@
+$stmt=$pdo->prepare('INSERT INTO permohonan (nomor_permohonan,tanggal_permohonan,nama_pemohon,nomor_ippkh,jenis_permohonan,perihal,provinsi,kabupaten,kecamatan,luas_lahan,deskripsi,dokumen_pendukung,status,dibuat_oleh) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
