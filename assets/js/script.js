@@ -13,8 +13,14 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(window.Chart){
     const teal='#087d78';
     const statusCanvas=document.getElementById('statusChart');
-    if(statusCanvas)new Chart(statusCanvas,{type:'doughnut',data:{labels:['Dalam Proses','Selesai','Ditolak'],datasets:[{data:[document.querySelector('[data-status-proses]')?.textContent||1,1,1],backgroundColor:[teal,'#52a98a','#df765f'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}});
+    if(statusCanvas){
+      const counts=JSON.parse(statusCanvas.dataset.counts||'[0,0,0]');
+      new Chart(statusCanvas,{type:'doughnut',data:{labels:['Dalam Proses','Selesai','Ditolak'],datasets:[{data:counts,backgroundColor:[teal,'#52a98a','#df765f'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}});
+    }
     const yearCanvas=document.getElementById('yearChart');
-    if(yearCanvas)new Chart(yearCanvas,{type:'bar',data:{labels:['2022','2023','2024','2025','2026'],datasets:[{label:'Permohonan',data:[12,18,24,31,9],backgroundColor:teal,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,grid:{color:'#edf1f0'}},x:{grid:{display:false}}}}});
+    if(yearCanvas){
+      const chartData=JSON.parse(yearCanvas.dataset.chart||'{"labels":[],"values":[]}');
+      new Chart(yearCanvas,{type:'bar',data:{labels:chartData.labels,datasets:[{label:'Permohonan',data:chartData.values,backgroundColor:teal,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,grid:{color:'#edf1f0'},ticks:{precision:0}},x:{grid:{display:false}}}}});
+    }
   }
 });
