@@ -1,0 +1,16 @@
+<?php
+require_once __DIR__.'/../../auth/auth_check.php';
+require_once __DIR__.'/../../config/database.php';
+
+if($_SERVER['REQUEST_METHOD']==='POST'){
+    $id=(int)($_POST['laporan_id']??0);
+    $nilai=(float)($_POST['nilai']??0);$nilai=max(0,min(100,$nilai));
+    $predikat=$nilai>=85?'Baik Sekali':($nilai>=70?'Baik':($nilai>=55?'Cukup':'Kurang'));
+    $stmt=$pdo->prepare('INSERT INTO penilaian (laporan_id,penilai_id,nilai,predikat,catatan) VALUES (?,?,?,?,?)');
+    $stmt->execute([$id,$_SESSION['user_id'],$nilai,$predikat,$_POST['catatan']??'']);
+    $pdo->prepare('INSERT INTO aktivitas_log (user_id,aksi,entitas,entitas_id,detail) VALUES (?,?,?,?,?)')->execute([$_SESSION['user_id'],'Menilai','laporan',$id,'Nilai '.$nilai]);
+    header('Location: index.php');exit;
+}
+$laporan=$pdo->query('SELECT * FROM laporan ORDER BY created_at DESC')->fetchAll();
+$penilaian=$pdo->query('SELECT p.*,l.nomor_laporan,l.nama_perusahaan,u.nama FROM penilaian p JOIN laporan l ON l.id=p.laporan_id LEFT JOIN users u ON u.id=p.penilai_id ORDER BY p.created_at DESC')->fetchAll();
+?><!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Penilaian Kegiatan | SICERDAS</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"><link href="../../assets/css/style.css" rel="stylesheet"></head><body><?php include __DIR__.'/../../layouts/sidebar.php';?><div class="main-wrapper"><?php include __DIR__.'/../../layouts/navbar.php';?><main class="content"><div class="page-heading"><div><p>Evaluasi Pelaksanaan</p><h1>Penilaian Kegiatan</h1></div></div><div class="row g-3"><div class="col-lg-4"><div class="panel p-3"><h2 class="fs-6">Berikan Penilaian</h2><form method="post" class="vstack gap-2"><select class="form-select" name="laporan_id" required><option value="">Pilih laporan</option><?php foreach($laporan as $r):?><option value="<?=$r['id']?>"><?=htmlspecialchars($r['nomor_laporan'].' - '.$r['nama_perusahaan'])?></option><?php endforeach?></select><input type="number" min="0" max="100" step="0.01" class="form-control" name="nilai" placeholder="Nilai 0–100" required><textarea class="form-control" name="catatan" rows="3" placeholder="Catatan penilaian"></textarea><button class="btn btn-orange">Simpan Penilaian</button></form></div></div><div class="col-lg-8"><div class="panel table-panel"><div class="table-responsive"><table class="table sicerdas-table"><thead><tr><th>Laporan</th><th>Perusahaan</th><th>Nilai</th><th>Predikat</th><th>Penilai</th></tr></thead><tbody><?php foreach($penilaian as $r):?><tr><td><?=htmlspecialchars($r['nomor_laporan'])?></td><td><?=htmlspecialchars($r['nama_perusahaan'])?></td><td><?=number_format((float)$r['nilai'],2) ?></td><td><?=htmlspecialchars($r['predikat'])?></td><td><?=htmlspecialchars($r['nama'])?></td></tr><?php endforeach;if(!$penilaian):?><tr><td colspan="5" class="text-center py-4">Belum ada penilaian.</td></tr><?php endif?></tbody></table></div></div></div></div></main></div><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script></body></html>
