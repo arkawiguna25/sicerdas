@@ -1,13 +1,9 @@
-<?php
-$current = basename($_SERVER['PHP_SELF'], '.php');
-$base = '/sicerdas/';
-?>
+<?php $base='/sicerdas/'; ?>
 <header class="topbar">
-  <button class="sidebar-toggle" type="button"><i class="fa-solid fa-bars"></i></button>
-  <div class="topbar-title">SICERDAS <span>Sistem Informasi Rehabilitasi DAS</span></div>
+  <button class="sidebar-toggle" type="button" aria-label="Buka navigasi" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
+  <div class="topbar-title">Ruang kerja <span>›</span> SICERDAS</div>
   <div class="topbar-actions">
-    <button class="topbar-icon" title="Bahasa"><i class="fa-solid fa-globe"></i></button>
-    <button class="topbar-icon" title="Notifikasi"><i class="fa-regular fa-bell"></i><b>2</b></button>
-    <div class="user-menu"><span class="avatar"><?= htmlspecialchars(substr($_SESSION['nama'] ?? 'U',0,1)) ?></span><div><strong><?= htmlspecialchars($_SESSION['nama'] ?? 'Pengguna') ?></strong><small><?= htmlspecialchars(ucfirst($_SESSION['role'] ?? '')) ?></small></div></div>
+    <a class="topbar-icon" href="<?=$base?>modules/bantuan/" title="Panduan dan bantuan" aria-label="Panduan"><i class="fa-regular fa-circle-question"></i></a>
+    <div class="user-menu"><span class="avatar"><?=htmlspecialchars(mb_strtoupper(mb_substr($_SESSION['nama']??'U',0,1)))?></span><div><strong><?=htmlspecialchars($_SESSION['nama']??'Pengguna')?></strong><small><?=htmlspecialchars($_SESSION['role']??'')?></small></div></div>
   </div>
 </header>
