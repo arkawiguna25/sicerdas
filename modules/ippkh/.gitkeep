@@ -1,0 +1,4 @@
+<?php
+require_once __DIR__.'/../../auth/auth_check.php';
+require_once __DIR__.'/../../config/database.php';
+?><!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dashboard Cetak | SICERDAS</title></head><body></body></html>
